@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Fuel</title>
+<style>
+:root {
+  --ink: #1c1e1b;
+  --muted: #5e655c;
+  --line: #e6e0d4;
+  --cream: #f8f3e6;
+  --paper: #ffffff;
+  --bg: #f4f3ef;
+  --green: #1f6a43;
+  --green-soft: #f3f8f4;
+  --blue: #2f6fe0;
+  --teal: #1498aa;
+  --gold: #e2b31c;
+  --warn: #8a4b12;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 12px 0 16px; }
+legend { padding: 0 6px; font-weight: 650; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.5 "Avenir Next", "Segoe UI", sans-serif;
+}
+main { max-width: 980px; margin: 0 auto; padding: 28px 20px 72px; }
+h1 { font-size: 40px; line-height: 1.1; letter-spacing: -0.03em; margin: 0 0 8px; }
+h2 { font-size: 28px; letter-spacing: -0.02em; margin: 28px 0 8px; }
+h3 { margin: 0 0 8px; font-size: 18px; }
+p { margin: 0 0 12px; }
+.lede { max-width: 62ch; color: var(--muted); }
+.kicker { margin: 0 0 8px; color: var(--green); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.panel { background: var(--paper); border-radius: 16px; padding: 24px; margin-top: 18px; }
+.rail { display: flex; flex-wrap: wrap; gap: 4px; margin: 18px 0 0; padding: 0; }
+.rail button, .tabs button, button.secondary, button.link {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.rail button[aria-current="step"] { color: var(--green); font-weight: 700; background: var(--green-soft); }
+button.primary, button[type="submit"] {
+  background: var(--green);
+  color: white;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+button.secondary { color: var(--green); border: 1px solid var(--green); background: white; font: inherit; }
+button.link { padding-left: 0; color: var(--muted); font: inherit; }
+button:disabled { opacity: .45; cursor: default; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 18px; }
+.choices.stack { grid-template-columns: 1fr; }
+.choice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  background: white;
+  cursor: pointer;
+}
+.choice:has(input:checked) { border-color: var(--green); box-shadow: inset 0 0 0 1px var(--green); background: var(--green-soft); }
+.choice strong { display: block; }
+.choice small, .muted { color: var(--muted); }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; margin-bottom: 8px; }
+label.field { display: flex; flex-direction: column; gap: 6px; font-weight: 650; }
+label.field input, select {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid #d5d0c6;
+  border-radius: 8px;
+  max-width: none;
+  width: 100%;
+  background: white;
+}
+.height-pair { display: flex; gap: 8px; }
+.height-pair input { width: 100%; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
+.check-row { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0 16px; }
+.check-row label { font-weight: 500; }
+#status { min-height: 1.4em; white-space: pre-wrap; }
+#status.is-error { color: var(--warn); }
+.results-top, .split { display: grid; grid-template-columns: 280px 1fr; gap: 28px; align-items: start; }
+.split { grid-template-columns: 1fr 1fr; margin-top: 8px; }
+.calorie-card {
+  background: var(--cream);
+  border-radius: 12px;
+  text-align: center;
+  padding: 28px 16px;
+}
+.calorie-card .daily, .calorie-card .weekly { display: block; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.calorie-card .daily { font-size: 64px; }
+.calorie-card .weekly { font-size: 40px; }
+.calorie-card em { color: #6d675b; font-size: 14px; }
+.calorie-card hr { border: 0; border-top: 1px solid #e4d8c0; margin: 18px 12px; }
+table.stats { width: 100%; border-collapse: collapse; }
+table.stats td { padding: 10px 0; border-bottom: 1px solid var(--line); vertical-align: baseline; }
+table.stats td.num { text-align: right; white-space: nowrap; padding-left: 16px; }
+table.stats tr.is-selected td { font-weight: 750; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+.tabs button[aria-pressed="true"] { color: var(--ink); font-weight: 700; box-shadow: inset 0 -2px 0 var(--ink); border-radius: 0; }
+.macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.macro { background: #fbf6ea; border-radius: 12px; overflow: hidden; text-align: center; }
+button.macro-hit {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.macro-title { display: block; color: white; font-weight: 700; padding: 10px 8px; }
+.macro.moderate .macro-title { background: var(--blue); }
+.macro.lower .macro-title { background: var(--teal); }
+.macro.higher .macro-title { background: var(--gold); color: #2b2614; }
+.macro.is-selected { box-shadow: inset 0 0 0 2px var(--green); }
+.macro .grams { display: block; font-size: 42px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; margin: 16px 0 4px; }
+.macro .kind { display: inline-block; margin: 0 0 14px; color: #5e584c; border-bottom: 1px dotted #b7ad96; }
+.macro .block { display: block; }
+.macro .block + .block { border-top: 1px solid #efe4cc; }
+.day-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.day {
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 16px;
+}
+.meal { padding: 10px 0; border-top: 1px solid #eadfca; }
+.meal:first-of-type { border-top: 0; }
+.meal p { margin: 0; }
+.store-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.store {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  background: white;
+}
+.store.is-best { border-color: var(--green); background: var(--green-soft); }
+.store .grams { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin: 8px 0; }
+.price-list { list-style: none; padding: 0; margin: 12px 0 0; }
+.price-list li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.nowrap { white-space: nowrap; }
+.ok { color: var(--green); font-weight: 700; }
+.warn { color: var(--warn); font-weight: 700; }
+.summary { color: var(--muted); margin-bottom: 0; }
+@media (max-width: 800px) {
+  h1 { font-size: 32px; }
+  .fields, .choices, .results-top, .split, .macros, .store-grid { grid-template-columns: 1fr; }
+  .calorie-card .daily { font-size: 52px; }
+  table.stats tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  table.stats td, table.stats td.num { display: block; width: auto; border: 0; padding: 0; text-align: left; white-space: normal; }
+  table.stats td.num { padding-top: 2px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker" id="kicker">Step 1 of 6</p>
+  <h1 id="title" tabindex="-1">Metric or imperial?</h1>
+  <p class="lede" id="lede">This sets the units for weight, height, and ideal weight.</p>
+  <nav class="rail" aria-label="Steps">
+    <button type="button" data-step="units">1 Units</button>
+    <button type="button" data-step="stats">2 Stats</button>
+    <button type="button" data-step="results">3 Results</button>
+    <button type="button" data-step="recipes">4 Recipes</button>
+    <button type="button" data-step="prices">5 Prices</button>
+    <button type="button" data-step="workouts">6 Workout</button>
+  </nav>
+
+  <section class="panel" id="step-units">
+    <form id="units-form">
+      <div class="choices">
+        <label class="choice"><input type="radio" name="units" value="imperial" required><span><strong>Imperial</strong><small>Pounds, feet, and inches</small></span></label>
+        <label class="choice"><input type="radio" name="units" value="metric"><span><strong>Metric</strong><small>Kilograms and centimeters</small></span></label>
+      </div>
+      <button type="submit">Continue</button>
+    </form>
+  </section>
+
+  <section class="panel" id="step-stats" hidden>
+    <form id="stats-form">
+      <div class="fields">
+        <label class="field">Age
+          <input id="age" name="age" type="number" inputmode="numeric" min="16" max="80" required>
+        </label>
+        <div>
+          <p style="font-weight:650;margin-bottom:8px">Gender</p>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="gender" value="female" required>Female</label>
+            <label class="choice"><input type="radio" name="gender" value="male">Male</label>
+          </div>
+        </div>
+        <label class="field">Weight
+          <span class="height-pair">
+            <input id="weight" name="weight" type="number" inputmode="decimal" step="0.1" required>
+            <span id="weight-unit" style="align-self:center">lbs</span>
+          </span>
+        </label>
+        <div id="height-imperial">
+          <p style="font-weight:650;margin-bottom:6px">Height</p>
+          <div class="height-pair">
+            <label class="field">Feet
+              <input id="height-ft" type="number" inputmode="numeric" min="4" max="7" required>
+            </label>
+            <label class="field">Inches
+              <input id="height-in" type="number" inputmode="numeric" min="0" max="11" value="0" required>
+            </label>
+          </div>
+        </div>
+        <label class="field" id="height-metric" hidden>Height
+          <span class="height-pair">
+            <input id="height-cm" type="number" inputmode="decimal" min="140" max="220" step="0.1" disabled>
+            <span style="align-self:center">cm</span>
+          </span>
+        </label>
+      </div>
+      <p style="font-weight:650;margin-bottom:8px">Activity</p>
+      <div class="choices stack">
+        <label class="choice"><input type="radio" name="activity" value="sedentary"><span><strong>Sedentary</strong><small>Little or no exercise</small></span></label>
+        <label class="choice"><input type="radio" name="activity" value="light" checked><span><strong>Light Exercise</strong><small>Exercise 1–3 times a week</small></span></label>
+        <label class="choice"><input type="radio" name="activity" value="moderate"><span><strong>Moderate Exercise</strong><small>Exercise 4–5 times a week</small></span></label>
+        <label class="choice"><input type="radio" name="activity" value="heavy"><span><strong>Heavy Exercise</strong><small>Daily exercise, or intense exercise 3–4 times a week</small></span></label>
+        <label class="choice"><input type="radio" name="activity" value="athlete"><span><strong>Athlete</strong><small>Intense exercise 6–7 times a week, or a physical job</small></span></label>
+      </div>
+      <div class="actions">
+        <button type="submit">Calculate</button>
+        <button type="button" class="link" data-back="units">Back</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel" id="step-results" hidden>
+    <div id="results"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="to-recipes">Continue to weekly budget</button>
+      <button type="button" class="link" data-back="stats">Edit stats</button>
+    </div>
+  </section>
+
+  <section class="panel" id="step-recipes" hidden>
+    <p class="summary" id="recipe-summary"></p>
+    <form id="recipe-form">
+      <div class="fields">
+        <label class="field">Weekly grocery budget (USD)
+          <input id="budget" name="weekly_budget" type="number" inputmode="decimal" min="1" max="10000" value="80" step="1" required>
+        </label>
+        <label class="field">Diet
+          <select name="diet">
+            <option value="any">Any</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+          </select>
+        </label>
+      </div>
+      <fieldset>
+        <legend>Skip sample allergens</legend>
+        <div class="check-row" id="allergens"></div>
+      </fieldset>
+      <label><input type="checkbox" name="remember" checked> Remember vetoed recipes for this browser session</label>
+      <p id="goal-line"></p>
+      <div class="actions">
+        <button type="submit">Find recipes</button>
+        <button type="button" class="link" data-back="results">Back to results</button>
+      </div>
+    </form>
+    <div id="meals"></div>
+  </section>
+
+  <section class="panel" id="step-prices" hidden>
+    <div id="prices"></div>
+  </section>
+
+  <section class="panel" id="step-workouts" hidden>
+    <p class="summary" id="workout-summary"></p>
+    <form id="workout-form">
+      <p style="font-weight:650">Where do you train?</p>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="equipment" value="home" checked>Home</label>
+        <label class="choice"><input type="radio" name="equipment" value="gym">Gym</label>
+      </div>
+      <fieldset>
+        <legend>Workout days, up to four</legend>
+        <div class="check-row" id="workout-days"></div>
+      </fieldset>
+      <div class="actions">
+        <button type="submit">Plan workouts</button>
+        <button type="button" class="link" data-back="prices">Back to prices</button>
+      </div>
+    </form>
+    <div id="workout-result"></div>
+  </section>
+
+  <p id="status" role="status"></p>
+</main>
+<script>
+const LB = 2.2046226218;
+const CM = 2.54;
+const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const SLOTS = ['breakfast', 'lunch', 'dinner'];
+const COPY = {
+  units: ['Step 1 of 6', 'Metric or imperial?', 'This sets the units for weight, height, and ideal weight.'],
+  stats: ['Step 2 of 6', 'Age, gender, weight, height, activity.', 'These five inputs are enough for a maintenance-calorie estimate.'],
+  results: ['Step 3 of 6', 'Your maintenance calories', 'Ideal weight, BMI, and macros sit with the calorie estimate. These are averages, not medical advice.'],
+  recipes: ['Step 4 of 6', 'Weekly budget and meals', 'Recipe Finder builds seven days of meals near your calorie target. Veto a recipe to take it off the whole week.'],
+  prices: ['Step 5 of 6', 'Best grocery prices', 'Price Finder compares Harbor Market, Green Basket, and Corner Co-op, then keeps the lowest sample price on each ingredient.'],
+  workouts: ['Step 6 of 6', 'Workout plan', 'Last step. Workout Planner adds a short full-body template on the days you choose.'],
+};
+const state = {
+  step: 'units',
+  units: null,
+  assessment: null,
+  goal: 'maintenance',
+  macro: 'moderate',
+  sessionId: null,
+  plan: null,
+  vetoes: [],
+};
+
+const fmt = new Intl.NumberFormat('en-US');
+const moneyFmt = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'});
+const $ = (id) => document.getElementById(id);
+
+function el(tag, attrs, children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs || {})) {
+    if (key === 'class') node.className = value;
+    else if (key === 'text') node.textContent = value;
+    else node.setAttribute(key, value);
+  }
+  for (const child of children || []) node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  return node;
+}
+function kcal(n) { return fmt.format(Math.round(n)); }
+function money(n) { return moneyFmt.format(n); }
+function weightNumber(n) {
+  if (Number.isInteger(n)) return fmt.format(n);
+  return (Math.round(n * 10) / 10).toFixed(1);
+}
+function setStatus(message, isError) {
+  const node = $('status');
+  node.textContent = message || '';
+  node.classList.toggle('is-error', Boolean(isError));
+}
+function goalRecord() {
+  return state.assessment.goals.find((goal) => goal.id === state.goal);
+}
+function splitRecord(goal) {
+  return (goal || goalRecord()).splits.find((split) => split.id === state.macro);
+}
+
+function show(step, moveFocus = true) {
+  state.step = step;
+  const [kicker, title, lede] = COPY[step];
+  $('kicker').textContent = kicker;
+  $('title').textContent = title;
+  $('lede').textContent = lede;
+  for (const name of Object.keys(COPY)) $('step-' + name).hidden = name !== step;
+  for (const button of document.querySelectorAll('.rail button')) {
+    const name = button.dataset.step;
+    if (name === step) button.setAttribute('aria-current', 'step');
+    else button.removeAttribute('aria-current');
+    button.disabled = !canOpen(name);
+  }
+  if (step === 'recipes') refreshRecipeCopy();
+  if (step === 'workouts') refreshWorkoutCopy();
+  if (moveFocus) $('title').focus();
+}
+function canOpen(step) {
+  if (step === 'units' || step === 'stats') return step === 'units' || Boolean(state.units);
+  if (step === 'results' || step === 'recipes') return Boolean(state.assessment);
+  if (step === 'prices' || step === 'workouts') return Boolean(state.plan && state.plan.prices);
+  return false;
+}
+
+function applyUnitLabels() {
+  const metric = state.units === 'metric';
+  $('weight-unit').textContent = metric ? 'kg' : 'lbs';
+  const weight = $('weight');
+  weight.min = metric ? '35' : '80';
+  weight.max = metric ? '250' : '550';
+  $('height-metric').hidden = !metric;
+  $('height-imperial').hidden = metric;
+  $('height-cm').disabled = !metric;
+  $('height-cm').required = metric;
+  $('height-ft').disabled = metric;
+  $('height-in').disabled = metric;
+  $('height-ft').required = !metric;
+  $('height-in').required = !metric;
+}
+function convertBody(prev, next) {
+  const weight = $('weight');
+  if (weight.value !== '') {
+    const value = Number(weight.value);
+    weight.value = (next === 'metric' ? value / LB : value * LB).toFixed(1);
+  }
+  if (prev === 'imperial' && next === 'metric' && $('height-ft').value !== '') {
+    const total = Number($('height-ft').value) * 12 + Number($('height-in').value || 0);
+    $('height-cm').value = (total * CM).toFixed(1);
+  }
+  if (prev === 'metric' && next === 'imperial' && $('height-cm').value !== '') {
+    let total = Number($('height-cm').value) / CM;
+    let feet = Math.floor(total / 12);
+    let inches = Math.round(total - feet * 12);
+    if (inches === 12) { feet += 1; inches = 0; }
+    $('height-ft').value = String(feet);
+    $('height-in').value = String(inches);
+  }
+}
+function switchUnits(next) {
+  if (state.units && state.units !== next) convertBody(state.units, next);
+  state.units = next;
+  applyUnitLabels();
+  for (const input of document.querySelectorAll('input[name="units"]')) input.checked = input.value === next;
+}
+function bodyPayload() {
+  const form = new FormData($('stats-form'));
+  const common = {
+    units: state.units,
+    gender: form.get('gender'),
+    activity: form.get('activity'),
+    age: Number($('age').value),
+  };
+  if (state.units === 'metric') {
+    return {...common, weight_kg: Number($('weight').value), height_cm: Number($('height-cm').value)};
+  }
+  return {
+    ...common,
+    weight_lb: Number($('weight').value),
+    height_ft: Number($('height-ft').value),
+    height_in: Number($('height-in').value || 0),
+  };
+}
+function clearPlan() {
+  state.sessionId = null;
+  state.plan = null;
+  state.vetoes = [];
+  $('meals').replaceChildren();
+  $('prices').replaceChildren();
+  $('workout-result').replaceChildren();
+}
+
+async function post(path, data) {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error || 'Request failed');
+  return result;
+}
+async function run(message, fn) {
+  document.querySelectorAll('button').forEach((button) => { button.disabled = true; });
+  setStatus(message, false);
+  try {
+    await fn();
+  } catch (error) {
+    setStatus(error.message, true);
+  } finally {
+    document.querySelectorAll('button').forEach((button) => { button.disabled = false; });
+    for (const button of document.querySelectorAll('.rail button')) button.disabled = !canOpen(button.dataset.step);
+  }
+}
+
+function statTable(rows) {
+  const table = el('table', {class: 'stats'});
+  for (const row of rows) {
+    const tr = el('tr', {class: row.selected ? 'is-selected' : ''});
+    tr.append(el('td', {}, [row.label]), el('td', {class: 'num'}, [row.value]));
+    table.append(tr);
+  }
+  return table;
+}
+function renderResults() {
+  const assessment = state.assessment;
+  const root = $('results');
+  root.replaceChildren();
+  const top = el('div', {class: 'results-top'});
+  const card = el('aside', {class: 'calorie-card'});
+  card.append(
+    el('p', {class: 'kicker'}, ['Your maintenance calories']),
+    el('strong', {class: 'daily'}, [kcal(assessment.maintenance.daily)]),
+    el('em', {}, ['calories per day']),
+    el('hr'),
+    el('strong', {class: 'weekly'}, [kcal(assessment.maintenance.weekly)]),
+    el('em', {}, ['calories per week']),
+  );
+  const explain = el('div');
+  const sentence = el('p');
+  sentence.append(
+    'Based on your stats, the best estimate for your maintenance calories is ',
+    el('strong', {}, [kcal(assessment.maintenance.daily) + ' calories per day']),
+    ' using the Mifflin–St Jeor formula. The table shows the other activity levels.',
+  );
+  explain.append(sentence, statTable(assessment.levels.map((level) => ({
+    label: level.label,
+    value: kcal(level.calories) + ' calories per day',
+    selected: level.selected,
+  }))));
+  top.append(card, explain);
+
+  const ideal = assessment.ideal_weight;
+  const range = ideal.low === ideal.high
+    ? weightNumber(ideal.low) + ' ' + ideal.unit
+    : weightNumber(ideal.low) + '–' + weightNumber(ideal.high) + ' ' + ideal.unit;
+  const idealBlock = el('section');
+  const idealHeading = el('h2');
+  idealHeading.append('Ideal weight: ', el('span', {class: 'nowrap'}, [range]));
+  idealBlock.append(
+    idealHeading,
+    el('p', {}, ['Your ideal body weight is estimated at ' + range + '. It is a height average, so treat it lightly, especially if you lift.']),
+  );
+  const bmi = assessment.bmi;
+  const bmiBlock = el('section');
+  bmiBlock.append(
+    el('h2', {}, ['BMI score: ' + bmi.score]),
+    el('p', {}, ['Your BMI is ' + bmi.score + ', which is classified as ' + bmi.category + '.']),
+    statTable(bmi.bands.map((band) => ({label: band.label, value: band.category, selected: band.selected}))),
+  );
+  const split = el('div', {class: 'split'});
+  split.append(idealBlock, bmiBlock);
+
+  const macroBlock = el('section');
+  macroBlock.append(el('h2', {}, ['Macronutrients']));
+  const tabs = el('div', {class: 'tabs', role: 'group', 'aria-label': 'Calorie goal'});
+  for (const goal of assessment.goals) {
+    const button = el('button', {type: 'button', 'aria-pressed': String(goal.id === state.goal)}, [goal.label]);
+    button.addEventListener('click', () => { state.goal = goal.id; renderResults(); });
+    tabs.append(button);
+  }
+  const note = el('p', {class: 'muted'});
+  const selected = goalRecord();
+  note.textContent = selected.label + ' uses ' + kcal(selected.calories) + ' calories per day. 30/35/35 means 30% protein, 35% fat, 35% carbs. Meal planning will use the ' + selected.label.toLowerCase() + ' calories.';
+  const cards = el('div', {class: 'macros'});
+  for (const item of selected.splits) {
+    const selectedSplit = item.id === state.macro;
+    const card = el('article', {class: 'macro ' + item.id + (selectedSplit ? ' is-selected' : '')});
+    const button = el('button', {type: 'button', class: 'macro-hit', 'aria-pressed': String(selectedSplit)});
+    button.addEventListener('click', () => { state.macro = item.id; renderResults(); });
+    button.append(el('span', {class: 'macro-title'}, [item.name + ' (' + item.protein_pct + '/' + item.fat_pct + '/' + item.carb_pct + ')']));
+    for (const [grams, kind] of [[item.protein_g, 'protein'], [item.fat_g, 'fats'], [item.carbs_g, 'carbs']]) {
+      button.append(el('span', {class: 'block'}, [
+        el('span', {class: 'grams'}, [fmt.format(grams) + 'g']),
+        el('span', {class: 'kind'}, [kind]),
+      ]));
+    }
+    card.append(button);
+    cards.append(card);
+  }
+  macroBlock.append(tabs, note, cards);
+  root.append(top, split, macroBlock);
+}
+
+function refreshRecipeCopy() {
+  if (!state.assessment) return;
+  const assessment = state.assessment;
+  $('recipe-summary').textContent = [assessment.gender_label, assessment.age, assessment.weight_label, assessment.height_label, assessment.activity_label].join(' · ');
+  const goal = goalRecord();
+  const split = splitRecord(goal);
+  let line = 'Recipe Finder will aim for ' + kcal(goal.calories) + ' calories a day (' + goal.label.toLowerCase() + ', ' + split.name.toLowerCase() + ' ' + split.protein_pct + '/' + split.fat_pct + '/' + split.carb_pct + '). Sample portions are fixed, so the daily total can miss that target.';
+  if (state.plan && state.plan.profile.daily_calories !== goal.calories) {
+    line += ' The meals below are still on the previous target. Find recipes again to apply this one.';
+  }
+  $('goal-line').textContent = line;
+}
+function refreshWorkoutCopy() {
+  if (!state.plan || !state.plan.budget) return;
+  const budget = state.plan.budget;
+  $('workout-summary').textContent = 'Groceries at the best sample prices: ' + money(budget.estimated_total) + ' of a ' + money(budget.budget) + ' weekly budget.';
+}
+
+function renderMeals(plan) {
+  const root = $('meals');
+  root.replaceChildren();
+  if (!plan) return;
+  const goal = plan.assessment.goals.find((item) => item.id === plan.profile.goal);
+  const split = goal.splits.find((item) => item.id === plan.profile.macro_split);
+  root.append(el('h2', {}, ['Recipe Finder']));
+  root.append(el('p', {}, ['Seven days, matched to ' + kcal(plan.profile.daily_calories) + ' calories. Guide for the day: ' + split.protein_g + 'g protein, ' + split.fat_g + 'g fat, ' + split.carbs_g + 'g carbs. Veto removes that recipe from every day it appears. It stays out of later picks while “remember” is checked.']));
+  if (plan.rejected_recipe_ids.length) {
+    const names = state.vetoes.length ? ' ' + state.vetoes.join(', ') + '.' : '';
+    root.append(el('p', {class: 'muted'}, ['Vetoed this session: ' + plan.rejected_recipe_ids.length + '.' + names]));
+  }
+  const grid = el('div', {class: 'day-grid'});
+  for (const day of DAYS) {
+    const card = el('article', {class: 'day'});
+    card.append(el('h3', {}, [day]));
+    const meals = SLOTS.map((slot) => plan.meals.find((meal) => meal.day === day && meal.slot === slot));
+    for (const meal of meals) {
+      const block = el('div', {class: 'meal'});
+      const meta = [meal.recipe.calories + ' kcal', meal.recipe.protein_g + 'g protein'];
+      if (meal.recipe.allergens.length) meta.push(meal.recipe.allergens.join(', '));
+      block.append(el('p', {}, [meal.slot[0].toUpperCase() + meal.slot.slice(1) + ' — ' + meal.recipe.name]));
+      block.append(el('p', {class: 'muted'}, [meta.join(' · ')]));
+      const button = el('button', {type: 'button', class: 'secondary'}, ['Veto recipe']);
+      button.addEventListener('click', () => veto(day, meal.slot, meal.recipe));
+      block.append(button);
+      card.append(block);
+    }
+    const totals = plan.daily_totals[day];
+    const signed = (totals.difference_calories > 0 ? '+' : '') + fmt.format(totals.difference_calories);
+    card.append(el('p', {}, [kcal(totals.calories) + ' / ' + kcal(totals.target_calories) + ' kcal (' + signed + ')']));
+    card.append(el('p', {class: 'muted'}, ['Protein ' + totals.protein_g + 'g, fat ' + totals.fat_g + 'g, carbs ' + totals.carbs_g + 'g']));
+    grid.append(card);
+  }
+  root.append(grid);
+  const next = el('button', {type: 'button', class: 'primary'}, ['Find best prices']);
+  next.addEventListener('click', () => findPrices());
+  root.append(el('div', {class: 'actions'}, [next]));
+}
+
+function renderPrices(plan) {
+  const root = $('prices');
+  root.replaceChildren();
+  const prices = plan.prices;
+  const budget = plan.budget;
+  const bestStore = prices.one_stop[0];
+  const saved = Math.round((bestStore.estimated_cost - prices.cherry_pick_total) * 100) / 100;
+  root.append(el('h2', {}, ['Price Finder']));
+  const headline = el('p');
+  headline.append(el('strong', {class: budget.within_budget ? 'ok' : 'warn'}, [money(prices.cherry_pick_total)]));
+  headline.append(' at the best price for each item, against a ' + money(budget.budget) + ' weekly budget. ');
+  headline.append(budget.within_budget ? 'The sample list fits the budget.' : 'The sample list is over budget.');
+  root.append(headline);
+  budget.suggestions.forEach((suggestion) => root.append(el('p', {}, [suggestion])));
+  if (saved > 0) {
+    root.append(el('p', {}, ['Buying each ingredient at its cheapest store is ' + money(saved) + ' less than shopping only at ' + bestStore.store + '.']));
+  } else {
+    root.append(el('p', {}, [bestStore.store + ' already has the lowest sample price on every item.']));
+  }
+  const stores = el('div', {class: 'store-grid'});
+  for (const store of prices.one_stop) {
+    const card = el('article', {class: store.store === bestStore.store ? 'store is-best' : 'store'});
+    card.append(el('h3', {}, [store.store]));
+    card.append(el('p', {class: 'grams'}, [money(store.estimated_cost)]));
+    card.append(el('p', {class: 'muted'}, [store.store === bestStore.store ? 'Cheapest single store' : 'One-store total']));
+    stores.append(card);
+  }
+  root.append(stores);
+  const list = el('ul', {class: 'price-list'});
+  for (const item of prices.items) {
+    const others = item.offers.filter((offer) => !offer.best).map((offer) => offer.store + ' ' + money(offer.estimated_cost)).join(' · ');
+    const row = el('li');
+    row.append(el('strong', {}, [item.ingredient + ' · ' + fmt.format(item.grams) + ' g']));
+    row.append(el('p', {}, [item.best_store + ' · ' + money(item.estimated_cost)]));
+    if (others) row.append(el('p', {class: 'muted'}, [others]));
+    list.append(row);
+  }
+  root.append(list);
+  const next = el('button', {type: 'button', class: 'primary'}, ['Plan workouts']);
+  next.addEventListener('click', () => show('workouts'));
+  const back = el('button', {type: 'button', class: 'link'}, ['Back to recipes']);
+  back.addEventListener('click', () => show('recipes'));
+  root.append(el('div', {class: 'actions'}, [next, back]));
+}
+
+function renderWorkouts(plan) {
+  const root = $('workout-result');
+  root.replaceChildren();
+  if (!plan.workouts.length) {
+    root.append(el('p', {}, ['No workout days selected. The other days stay open for rest.']));
+  } else {
+    const grid = el('div', {class: 'day-grid'});
+    for (const workout of plan.workouts) {
+      const card = el('article', {class: 'day'});
+      card.append(el('h3', {}, [workout.day]));
+      card.append(el('p', {}, [workout.type + ': ' + workout.exercises.join(', ') + '.']));
+      card.append(el('p', {class: 'muted'}, [workout.notes]));
+      grid.append(card);
+    }
+    root.append(grid);
+  }
+  root.append(el('h2', {}, ['Read this before you use the plan']));
+  const limits = el('ul');
+  for (const item of plan.limitations) limits.append(el('li', {}, [item]));
+  root.append(limits);
+}
+
+async function veto(day, slot, recipe) {
+  const count = state.plan.meals.filter((meal) => meal.recipe.id === recipe.id).length;
+  const days = count === 1 ? '1 day' : count + ' days';
+  await run('Removing ' + recipe.name + ' from the week…', async () => {
+    const result = await post('/api/replace', {session_id: state.sessionId, day, slot});
+    state.sessionId = result.session_id;
+    state.plan = result.plan;
+    if (!state.vetoes.includes(recipe.name)) state.vetoes.push(recipe.name);
+    renderMeals(state.plan);
+    if (state.plan.prices) renderPrices(state.plan);
+    else $('prices').replaceChildren();
+    if (state.step === 'workouts') renderWorkouts(state.plan);
+    setStatus(recipe.name + ' was removed from ' + days + '.', false);
+  });
+}
+async function findPrices() {
+  await run('Price Finder is comparing store prices…', async () => {
+    const result = await post('/api/prices', {session_id: state.sessionId});
+    state.sessionId = result.session_id;
+    state.plan = result.plan;
+    renderPrices(state.plan);
+    show('prices');
+    setStatus('Prices use the cheapest sample store for each ingredient.', false);
+  });
+}
+
+$('units-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const units = new FormData(event.target).get('units');
+  switchUnits(units);
+  show('stats');
+  setStatus('', false);
+});
+$('stats-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  run('Calculating maintenance calories…', async () => {
+    state.assessment = await post('/api/assess', bodyPayload());
+    state.goal = 'maintenance';
+    state.macro = 'moderate';
+    clearPlan();
+    renderResults();
+    show('results');
+    setStatus('Maintenance calories are ready.', false);
+  });
+});
+$('to-recipes').addEventListener('click', () => show('recipes'));
+$('recipe-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const form = new FormData(event.target);
+  const remember = form.has('remember');
+  run('Recipe Finder is matching meals to your calories…', async () => {
+    if (!remember) state.vetoes = [];
+    const result = await post('/api/recipes', {
+      session_id: state.sessionId,
+      remember_preferences: remember,
+      goal: state.goal,
+      macro_split: state.macro,
+      weekly_budget: Number(form.get('weekly_budget')),
+      diet: form.get('diet'),
+      allergens: form.getAll('allergens'),
+      body: bodyPayload(),
+    });
+    state.sessionId = result.session_id;
+    state.plan = result.plan;
+    renderMeals(state.plan);
+    $('prices').replaceChildren();
+    $('workout-result').replaceChildren();
+    show('recipes');
+    setStatus('Meals are ready. Veto any recipe you will not eat.', false);
+  });
+});
+$('workout-days').addEventListener('change', (event) => {
+  const checked = [...document.querySelectorAll('#workout-days input:checked')];
+  if (checked.length > 4 && event.target.checked) {
+    event.target.checked = false;
+    setStatus('Choose up to four workout days.', true);
+  }
+});
+$('workout-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const form = new FormData(event.target);
+  run('Workout Planner is building the last step…', async () => {
+    const result = await post('/api/workouts', {
+      session_id: state.sessionId,
+      equipment: form.get('equipment'),
+      workout_days: form.getAll('workout_days'),
+    });
+    state.sessionId = result.session_id;
+    state.plan = result.plan;
+    renderWorkouts(state.plan);
+    refreshWorkoutCopy();
+    setStatus('Workout plan is ready.', false);
+  });
+});
+document.body.addEventListener('click', (event) => {
+  const back = event.target.closest('[data-back]');
+  if (back) show(back.dataset.back);
+  const step = event.target.closest('.rail button');
+  if (step && !step.disabled) show(step.dataset.step);
+});
+
+for (const allergen of ['milk', 'egg', 'wheat', 'peanut', 'soy']) {
+  const box = el('input', {type: 'checkbox', name: 'allergens', value: allergen});
+  $('allergens').append(el('label', {}, [box, ' ' + allergen]));
+}
+for (const day of DAYS) {
+  const box = el('input', {type: 'checkbox', name: 'workout_days', value: day});
+  $('workout-days').append(el('label', {}, [box, ' ' + day]));
+}
+show('units', false);
+</script>
+</body>
+</html>

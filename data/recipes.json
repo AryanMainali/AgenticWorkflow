@@ -1,0 +1,187 @@
+[
+  {
+    "id": "r1",
+    "name": "Oatmeal with banana",
+    "slot": "breakfast",
+    "calories": 410,
+    "protein_g": 15,
+    "carbs_g": 65,
+    "fat_g": 11,
+    "ingredients_g": {
+      "oats": 80,
+      "banana": 120,
+      "milk": 200
+    },
+    "diets": [
+      "vegetarian"
+    ],
+    "allergens": [
+      "milk"
+    ]
+  },
+  {
+    "id": "r2",
+    "name": "Peanut butter toast",
+    "slot": "breakfast",
+    "calories": 430,
+    "protein_g": 17,
+    "carbs_g": 50,
+    "fat_g": 19,
+    "ingredients_g": {
+      "bread": 100,
+      "peanut butter": 30,
+      "banana": 100
+    },
+    "diets": [
+      "vegan",
+      "vegetarian"
+    ],
+    "allergens": [
+      "wheat",
+      "peanut"
+    ]
+  },
+  {
+    "id": "r3",
+    "name": "Egg toast",
+    "slot": "breakfast",
+    "calories": 440,
+    "protein_g": 25,
+    "carbs_g": 40,
+    "fat_g": 20,
+    "ingredients_g": {
+      "egg": 120,
+      "bread": 100,
+      "tomato": 100
+    },
+    "diets": [
+      "vegetarian"
+    ],
+    "allergens": [
+      "egg",
+      "wheat"
+    ]
+  },
+  {
+    "id": "r4",
+    "name": "Bean rice bowl",
+    "slot": "lunch",
+    "calories": 620,
+    "protein_g": 23,
+    "carbs_g": 100,
+    "fat_g": 14,
+    "ingredients_g": {
+      "beans": 220,
+      "rice": 100,
+      "tomato": 100,
+      "olive oil": 10
+    },
+    "diets": [
+      "vegan",
+      "vegetarian"
+    ],
+    "allergens": []
+  },
+  {
+    "id": "r5",
+    "name": "Chicken rice bowl",
+    "slot": "lunch",
+    "calories": 650,
+    "protein_g": 48,
+    "carbs_g": 80,
+    "fat_g": 15,
+    "ingredients_g": {
+      "chicken": 180,
+      "rice": 100,
+      "broccoli": 150,
+      "olive oil": 10
+    },
+    "diets": [],
+    "allergens": []
+  },
+  {
+    "id": "r6",
+    "name": "Tofu rice bowl",
+    "slot": "lunch",
+    "calories": 610,
+    "protein_g": 30,
+    "carbs_g": 80,
+    "fat_g": 19,
+    "ingredients_g": {
+      "tofu": 200,
+      "rice": 100,
+      "broccoli": 150,
+      "olive oil": 10
+    },
+    "diets": [
+      "vegan",
+      "vegetarian"
+    ],
+    "allergens": [
+      "soy"
+    ]
+  },
+  {
+    "id": "r7",
+    "name": "Lentil pasta",
+    "slot": "dinner",
+    "calories": 680,
+    "protein_g": 30,
+    "carbs_g": 105,
+    "fat_g": 15,
+    "ingredients_g": {
+      "lentils": 100,
+      "pasta": 100,
+      "tomato": 200,
+      "olive oil": 10
+    },
+    "diets": [
+      "vegan",
+      "vegetarian"
+    ],
+    "allergens": [
+      "wheat"
+    ]
+  },
+  {
+    "id": "r8",
+    "name": "Chicken pasta",
+    "slot": "dinner",
+    "calories": 700,
+    "protein_g": 50,
+    "carbs_g": 90,
+    "fat_g": 16,
+    "ingredients_g": {
+      "chicken": 180,
+      "pasta": 100,
+      "tomato": 200,
+      "olive oil": 10
+    },
+    "diets": [],
+    "allergens": [
+      "wheat"
+    ]
+  },
+  {
+    "id": "r9",
+    "name": "Tofu and potatoes",
+    "slot": "dinner",
+    "calories": 640,
+    "protein_g": 32,
+    "carbs_g": 80,
+    "fat_g": 22,
+    "ingredients_g": {
+      "tofu": 220,
+      "potato": 350,
+      "broccoli": 150,
+      "olive oil": 10
+    },
+    "diets": [
+      "vegan",
+      "vegetarian"
+    ],
+    "allergens": [
+      "soy"
+    ]
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "oats": [
+    {"store": "Harbor Market", "usd_per_g": 0.0032},
+    {"store": "Green Basket", "usd_per_g": 0.0026},
+    {"store": "Corner Co-op", "usd_per_g": 0.0036}
+  ],
+  "banana": [
+    {"store": "Harbor Market", "usd_per_g": 0.0016},
+    {"store": "Green Basket", "usd_per_g": 0.0022},
+    {"store": "Corner Co-op", "usd_per_g": 0.0024}
+  ],
+  "milk": [
+    {"store": "Harbor Market", "usd_per_g": 0.0018},
+    {"store": "Green Basket", "usd_per_g": 0.0016},
+    {"store": "Corner Co-op", "usd_per_g": 0.0013}
+  ],
+  "bread": [
+    {"store": "Harbor Market", "usd_per_g": 0.0034},
+    {"store": "Green Basket", "usd_per_g": 0.0044},
+    {"store": "Corner Co-op", "usd_per_g": 0.0048}
+  ],
+  "peanut butter": [
+    {"store": "Harbor Market", "usd_per_g": 0.0094},
+    {"store": "Green Basket", "usd_per_g": 0.0086},
+    {"store": "Corner Co-op", "usd_per_g": 0.0072}
+  ],
+  "egg": [
+    {"store": "Harbor Market", "usd_per_g": 0.0068},
+    {"store": "Green Basket", "usd_per_g": 0.0052},
+    {"store": "Corner Co-op", "usd_per_g": 0.0074}
+  ],
+  "tomato": [
+    {"store": "Harbor Market", "usd_per_g": 0.0024},
+    {"store": "Green Basket", "usd_per_g": 0.0032},
+    {"store": "Corner Co-op", "usd_per_g": 0.0036}
+  ],
+  "beans": [
+    {"store": "Harbor Market", "usd_per_g": 0.0034},
+    {"store": "Green Basket", "usd_per_g": 0.0031},
+    {"store": "Corner Co-op", "usd_per_g": 0.0025}
+  ],
+  "rice": [
+    {"store": "Harbor Market", "usd_per_g": 0.0023},
+    {"store": "Green Basket", "usd_per_g": 0.0017},
+    {"store": "Corner Co-op", "usd_per_g": 0.0024}
+  ],
+  "olive oil": [
+    {"store": "Harbor Market", "usd_per_g": 0.0104},
+    {"store": "Green Basket", "usd_per_g": 0.0135},
+    {"store": "Corner Co-op", "usd_per_g": 0.0122}
+  ],
+  "chicken": [
+    {"store": "Harbor Market", "usd_per_g": 0.0098},
+    {"store": "Green Basket", "usd_per_g": 0.0088},
+    {"store": "Corner Co-op", "usd_per_g": 0.0076}
+  ],
+  "broccoli": [
+    {"store": "Harbor Market", "usd_per_g": 0.0048},
+    {"store": "Green Basket", "usd_per_g": 0.0034},
+    {"store": "Corner Co-op", "usd_per_g": 0.0044}
+  ],
+  "tofu": [
+    {"store": "Harbor Market", "usd_per_g": 0.0052},
+    {"store": "Green Basket", "usd_per_g": 0.0064},
+    {"store": "Corner Co-op", "usd_per_g": 0.0071}
+  ],
+  "lentils": [
+    {"store": "Harbor Market", "usd_per_g": 0.0046},
+    {"store": "Green Basket", "usd_per_g": 0.0041},
+    {"store": "Corner Co-op", "usd_per_g": 0.0033}
+  ],
+  "pasta": [
+    {"store": "Harbor Market", "usd_per_g": 0.0034},
+    {"store": "Green Basket", "usd_per_g": 0.0026},
+    {"store": "Corner Co-op", "usd_per_g": 0.0036}
+  ],
+  "potato": [
+    {"store": "Harbor Market", "usd_per_g": 0.0015},
+    {"store": "Green Basket", "usd_per_g": 0.0021},
+    {"store": "Corner Co-op", "usd_per_g": 0.0024}
+  ]
+}
